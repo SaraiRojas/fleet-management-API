@@ -7,10 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.datafaker.Faker;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -43,5 +40,11 @@ public class UserController {
   public ResponseEntity<Optional<User>> getUser(@PathVariable long id) {
     Optional<User> userById = users.stream().filter(user -> user.getId() == id).findFirst();
     return ResponseEntity.ok(userById);
+  }
+
+  @PostMapping
+  public ResponseEntity<User> createUser(@RequestBody User newUser) {
+    // Logic to handle create request
+    return ResponseEntity.ok(newUser);
   }
 }
