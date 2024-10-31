@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("fleet-management-API/users")
-public class UsersController {
+public class UserController {
 
     private static final List<User> users;
 
