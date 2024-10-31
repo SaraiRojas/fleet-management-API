@@ -1,6 +1,6 @@
-package com.course.fleet.management.API.controller;
+package com.course.fleet.management.api.controller;
 
-import com.course.fleet.management.API.entity.User;
+import com.course.fleet.management.api.entity.User;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

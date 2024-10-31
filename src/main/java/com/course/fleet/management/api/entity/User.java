@@ -1,4 +1,4 @@
-package com.course.fleet.management.API.entity;
+package com.course.fleet.management.api.entity;
 
 public class User {
   private long id;

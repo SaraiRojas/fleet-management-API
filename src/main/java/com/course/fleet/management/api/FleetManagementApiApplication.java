@@ -1,4 +1,4 @@
-package com.course.fleet.management.API;
+package com.course.fleet.management.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
