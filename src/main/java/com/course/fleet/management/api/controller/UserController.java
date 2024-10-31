@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("fleet-management-API/users")
+@RequestMapping("/users")
 public class UserController {
 
   private static final List<User> users;
