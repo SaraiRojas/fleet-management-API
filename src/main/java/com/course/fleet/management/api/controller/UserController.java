@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.datafaker.Faker;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,7 @@ public class UserController {
   @PostMapping
   public ResponseEntity<User> createUser(@RequestBody User newUser) {
     // Logic to handle create request
-    return ResponseEntity.ok(newUser);
+    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
   }
 
   @PutMapping("/{id}")
