@@ -40,7 +40,10 @@ public class UserController {
   @GetMapping("/{id}")
   public ResponseEntity<Optional<User>> getUser(@PathVariable long id) {
     Optional<User> userById = users.stream().filter(user -> user.getId() == id).findFirst();
-    return ResponseEntity.ok(userById);
+    if (userById.isPresent()) {
+      return ResponseEntity.ok(userById);
+    }
+    return ResponseEntity.noContent().build();
   }
 
   @PostMapping
