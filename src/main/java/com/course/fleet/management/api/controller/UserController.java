@@ -53,4 +53,10 @@ public class UserController {
     // Logic to handle update request
     return ResponseEntity.ok(user);
   }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<User> updateUserAttributes(@PathVariable long id, @RequestBody User user) {
+    // Logic to handle patch request
+    return ResponseEntity.ok(user);
+  }
 }
