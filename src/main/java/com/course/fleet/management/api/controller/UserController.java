@@ -47,4 +47,10 @@ public class UserController {
     // Logic to handle create request
     return ResponseEntity.ok(newUser);
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody User user) {
+    // Logic to handle update request
+    return ResponseEntity.ok(user);
+  }
 }
