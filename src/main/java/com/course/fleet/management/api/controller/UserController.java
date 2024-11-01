@@ -59,4 +59,10 @@ public class UserController {
     // Logic to handle patch request
     return ResponseEntity.ok(user);
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+    // Logic to handle delete request
+    return ResponseEntity.noContent().build();
+  }
 }
