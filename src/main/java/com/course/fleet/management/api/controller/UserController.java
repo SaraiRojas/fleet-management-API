@@ -69,6 +69,6 @@ public class UserController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
     // Logic to handle delete request
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.notFound().build();
   }
 }
