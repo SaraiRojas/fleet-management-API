@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
   private static final List<User> users;
@@ -32,7 +32,7 @@ public class UserController {
             .collect(Collectors.toList());
   }
 
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<List<User>> getUsers() {
     return ResponseEntity.ok(users);
   }
