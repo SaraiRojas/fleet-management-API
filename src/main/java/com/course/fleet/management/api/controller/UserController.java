@@ -2,13 +2,13 @@ package com.course.fleet.management.api.controller;
 
 import com.course.fleet.management.api.entity.User;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.datafaker.Faker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/users")
@@ -38,12 +38,14 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Optional<User>> getUser(@PathVariable long id) {
-    Optional<User> userById = users.stream().filter(user -> user.getId() == id).findFirst();
-    if (userById.isPresent()) {
-      return ResponseEntity.ok(userById);
-    }
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<User> getUser(@PathVariable long id) {
+    final User userById =
+        users.stream()
+            .filter(user -> user.getId() == id)
+            .findFirst()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    ;
+    return ResponseEntity.ok(userById);
   }
 
   @PostMapping
