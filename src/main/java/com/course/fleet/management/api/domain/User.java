@@ -1,4 +1,4 @@
-package com.course.fleet.management.api.entity;
+package com.course.fleet.management.api.domain;
 
 public class User {
   private long id;
@@ -6,6 +6,11 @@ public class User {
   private String email;
 
   public User() {}
+
+  public User(String name, String email) {
+    this.name = name;
+    this.email = email;
+  }
 
   public User(long id, String name, String email) {
     this.id = id;

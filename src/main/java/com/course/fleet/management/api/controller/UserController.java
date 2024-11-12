@@ -1,7 +1,17 @@
 package com.course.fleet.management.api.controller;
 
-import com.course.fleet.management.api.entity.User;
-import net.datafaker.Faker;
+import com.course.fleet.management.api.domain.User;
+import com.course.fleet.management.api.dto.request.UserCreateRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO;
+import com.course.fleet.management.api.dto.response.UserCreateResponseDTO;
+import com.course.fleet.management.api.dto.response.UserResponseDTO;
+import com.course.fleet.management.api.dto.response.UserUpdateAttributeResponseDTO;
+import com.course.fleet.management.api.dto.response.UserUpdateResponseDTO;
+import com.course.fleet.management.api.service.UserService;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,71 +23,74 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-  private static final List<User> users;
+  private final UserService userService;
 
-  static {
-    Faker faker = new Faker();
-    users =
-        IntStream.range(0, 10)
-            .mapToObj(
-                i -> {
-                  String firstName = faker.name().firstName();
-                  String lastName = faker.name().lastName();
-                  return new User(
-                      (long) i,
-                      firstName + " " + lastName,
-                      firstName + "." + lastName + "@mail.com");
-                })
-            .collect(Collectors.toList());
+  @Autowired
+  public UserController(UserService userService) {
+    this.userService = userService;
   }
 
   @GetMapping("/all")
-  public ResponseEntity<List<User>> getUsers() {
-    return ResponseEntity.ok(users);
+  public ResponseEntity<List<UserResponseDTO>> getUsers() {
+    final List<User> userList = userService.getAll();
+    final List<UserResponseDTO> userListResponseDTO =
+        userList.stream()
+            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(userListResponseDTO);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<User> getUser(@PathVariable long id) {
-    final User userById =
-        users.stream()
-            .filter(user -> user.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    ;
-    return ResponseEntity.ok(userById);
+  public ResponseEntity<UserResponseDTO> getUser(@PathVariable long id) {
+    final User userById = userService.getUser(id);
+    final UserResponseDTO userResponseDTO =
+        new UserResponseDTO(userById.getId(), userById.getName(), userById.getEmail());
+    return ResponseEntity.ok(userResponseDTO);
   }
 
   @PostMapping
-  public ResponseEntity<User> createUser(@RequestBody User newUser) {
-    // Logic to handle create request
-    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+  public ResponseEntity<UserCreateResponseDTO> createUser(
+      @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
+    User newUser = new User(userCreateRequestDTO.name(), userCreateRequestDTO.email());
+    newUser = userService.create(newUser);
+    final UserCreateResponseDTO userCreateResponseDTO =
+        new UserCreateResponseDTO(newUser.getId(), newUser.getName(), newUser.getEmail());
+    return ResponseEntity.status(HttpStatus.CREATED).body(userCreateResponseDTO);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody User user) {
-    // Logic to handle update request
-    return ResponseEntity.ok(user);
+  public ResponseEntity<UserUpdateResponseDTO> updateUser(
+      @PathVariable long id, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+    User user = userService.getUser(id);
+    user.setName(userUpdateRequestDTO.name());
+    user.setEmail(userUpdateRequestDTO.email());
+    user = userService.updateUser(user);
+    final UserUpdateResponseDTO userUpdateResponseDTO =
+        new UserUpdateResponseDTO(user.getId(), user.getName(), user.getEmail());
+    return ResponseEntity.ok(userUpdateResponseDTO);
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<User> updateUserAttributes(@PathVariable long id, @RequestBody User user) {
-    // Logic to handle patch request
-    return ResponseEntity.ok(user);
+  public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttributes(
+      @PathVariable long id,
+      @RequestBody UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
+    User user = userService.getUser(id);
+    user.setName(userUpdateAttributeRequestDTO.name());
+    user.setEmail(userUpdateAttributeRequestDTO.email());
+    user = userService.updateUserAttribute(user);
+    final UserUpdateAttributeResponseDTO userUpdateAttributeResponseDTO =
+        new UserUpdateAttributeResponseDTO(user.getId(), user.getName(), user.getEmail());
+    return ResponseEntity.ok(userUpdateAttributeResponseDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-    // Logic to handle delete request
+    userService.deleteUser(id);
     return ResponseEntity.notFound().build();
   }
 }
