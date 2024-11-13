@@ -1,15 +1,16 @@
 package com.course.fleet.management.api.service.impl;
 
 import com.course.fleet.management.api.domain.User;
+import com.course.fleet.management.api.exception.customExceptions.UserAlreadyExistsException;
+import com.course.fleet.management.api.exception.customExceptions.UserNotFoundException;
 import com.course.fleet.management.api.service.UserService;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
@@ -35,6 +36,13 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User create(User user) {
+    // fake data to be able to test exception
+    final String duplicateEmail = "duplicateEmail@email.com";
+
+    if (Objects.equals(user.getEmail(), duplicateEmail)) {
+      throw new UserAlreadyExistsException("User already exists");
+    }
+
     return user;
   }
 
@@ -50,7 +58,7 @@ public class UserServiceImpl implements UserService {
         users.stream()
             .filter(user -> user.getId() == id)
             .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new UserNotFoundException("User is not found"));
 
     return userById;
   }
