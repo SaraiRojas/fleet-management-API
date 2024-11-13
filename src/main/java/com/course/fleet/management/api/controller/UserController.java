@@ -8,9 +8,10 @@ import com.course.fleet.management.api.dto.response.UserCreateResponseDTO;
 import com.course.fleet.management.api.dto.response.UserResponseDTO;
 import com.course.fleet.management.api.dto.response.UserUpdateAttributeResponseDTO;
 import com.course.fleet.management.api.dto.response.UserUpdateResponseDTO;
+import com.course.fleet.management.api.mapper.UserMapper;
 import com.course.fleet.management.api.service.UserService;
 import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,41 +26,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/user")
 public class UserController {
 
   private final UserService userService;
 
-  @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
-
   @GetMapping("/all")
   public ResponseEntity<List<UserResponseDTO>> getUsers() {
     final List<User> userList = userService.getAll();
     final List<UserResponseDTO> userListResponseDTO =
-        userList.stream()
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
-            .collect(Collectors.toList());
+        UserMapper.INSTANCE.toListUserResponseDTO(userList);
     return ResponseEntity.ok(userListResponseDTO);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<UserResponseDTO> getUser(@PathVariable long id) {
     final User userById = userService.getUser(id);
-    final UserResponseDTO userResponseDTO =
-        new UserResponseDTO(userById.getId(), userById.getName(), userById.getEmail());
+    final UserResponseDTO userResponseDTO = UserMapper.INSTANCE.toUserResponseDTO(userById);
     return ResponseEntity.ok(userResponseDTO);
   }
 
   @PostMapping
   public ResponseEntity<UserCreateResponseDTO> createUser(
       @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
-    User newUser = new User(userCreateRequestDTO.name(), userCreateRequestDTO.email());
+    User newUser = UserMapper.INSTANCE.toUser(userCreateRequestDTO);
     newUser = userService.create(newUser);
     final UserCreateResponseDTO userCreateResponseDTO =
-        new UserCreateResponseDTO(newUser.getId(), newUser.getName(), newUser.getEmail());
+        UserMapper.INSTANCE.toUserCreateResponseDTO(newUser);
     return ResponseEntity.status(HttpStatus.CREATED).body(userCreateResponseDTO);
   }
 
@@ -67,11 +61,10 @@ public class UserController {
   public ResponseEntity<UserUpdateResponseDTO> updateUser(
       @PathVariable long id, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
     User user = userService.getUser(id);
-    user.setName(userUpdateRequestDTO.name());
-    user.setEmail(userUpdateRequestDTO.email());
+    UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, user);
     user = userService.updateUser(user);
     final UserUpdateResponseDTO userUpdateResponseDTO =
-        new UserUpdateResponseDTO(user.getId(), user.getName(), user.getEmail());
+        UserMapper.INSTANCE.toUserUpdateResponseDTO(user);
     return ResponseEntity.ok(userUpdateResponseDTO);
   }
 
@@ -80,11 +73,10 @@ public class UserController {
       @PathVariable long id,
       @RequestBody UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
     User user = userService.getUser(id);
-    user.setName(userUpdateAttributeRequestDTO.name());
-    user.setEmail(userUpdateAttributeRequestDTO.email());
+    UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, user);
     user = userService.updateUserAttribute(user);
     final UserUpdateAttributeResponseDTO userUpdateAttributeResponseDTO =
-        new UserUpdateAttributeResponseDTO(user.getId(), user.getName(), user.getEmail());
+        UserMapper.INSTANCE.toUserUpdateAttributeResponseDTO(user);
     return ResponseEntity.ok(userUpdateAttributeResponseDTO);
   }
 
