@@ -1,7 +1,27 @@
 package com.course.fleet.management.api.controller;
 
-import com.course.fleet.management.api.entity.User;
-import net.datafaker.Faker;
+import static com.course.fleet.management.api.constants.UriConstant.USER_BASE_URL;
+import static com.course.fleet.management.api.constants.UriConstant.USER_BY_ID;
+import static com.course.fleet.management.api.constants.UriConstant.USER_DELETE;
+import static com.course.fleet.management.api.constants.UriConstant.USER_GET_ALL;
+import static com.course.fleet.management.api.constants.UriConstant.USER_UPDATE;
+import static com.course.fleet.management.api.constants.UriConstant.USER_UPDATE_ATTRIBUTE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import com.course.fleet.management.api.domain.User;
+import com.course.fleet.management.api.dto.request.UserCreateRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO;
+import com.course.fleet.management.api.dto.response.UserCreateResponseDTO;
+import com.course.fleet.management.api.dto.response.UserResponseDTO;
+import com.course.fleet.management.api.dto.response.UserUpdateAttributeResponseDTO;
+import com.course.fleet.management.api.dto.response.UserUpdateResponseDTO;
+import com.course.fleet.management.api.mapper.UserMapper;
+import com.course.fleet.management.api.service.UserService;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,71 +33,71 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
-@RequestMapping("/user")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequestMapping(value = USER_BASE_URL)
 public class UserController {
 
-  private static final List<User> users;
+  private final UserService userService;
 
-  static {
-    Faker faker = new Faker();
-    users =
-        IntStream.range(0, 10)
-            .mapToObj(
-                i -> {
-                  String firstName = faker.name().firstName();
-                  String lastName = faker.name().lastName();
-                  return new User(
-                      (long) i,
-                      firstName + " " + lastName,
-                      firstName + "." + lastName + "@mail.com");
-                })
-            .collect(Collectors.toList());
+  @GetMapping(value = USER_GET_ALL, produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<UserResponseDTO>> getUsers() {
+    final List<User> userList = userService.getAll();
+    final List<UserResponseDTO> userListResponseDTO =
+        UserMapper.INSTANCE.toListUserResponseDTO(userList);
+    return ResponseEntity.ok(userListResponseDTO);
   }
 
-  @GetMapping("/all")
-  public ResponseEntity<List<User>> getUsers() {
-    return ResponseEntity.ok(users);
+  @GetMapping(value = USER_BY_ID, produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserResponseDTO> getUser(@PathVariable long id) {
+    final User userById = userService.getUser(id);
+    final UserResponseDTO userResponseDTO = UserMapper.INSTANCE.toUserResponseDTO(userById);
+    return ResponseEntity.ok(userResponseDTO);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<User> getUser(@PathVariable long id) {
-    final User userById =
-        users.stream()
-            .filter(user -> user.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    ;
-    return ResponseEntity.ok(userById);
+  @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserCreateResponseDTO> createUser(
+      @RequestBody @Valid UserCreateRequestDTO userCreateRequestDTO) {
+    User newUser = UserMapper.INSTANCE.toUser(userCreateRequestDTO);
+    newUser = userService.create(newUser);
+    final UserCreateResponseDTO userCreateResponseDTO =
+        UserMapper.INSTANCE.toUserCreateResponseDTO(newUser);
+    return ResponseEntity.status(HttpStatus.CREATED).body(userCreateResponseDTO);
   }
 
-  @PostMapping
-  public ResponseEntity<User> createUser(@RequestBody User newUser) {
-    // Logic to handle create request
-    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+  @PutMapping(
+      value = USER_UPDATE,
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserUpdateResponseDTO> updateUser(
+      @PathVariable long id, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO) {
+    User user = userService.getUser(id);
+    UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, user);
+    user = userService.updateUser(user);
+    final UserUpdateResponseDTO userUpdateResponseDTO =
+        UserMapper.INSTANCE.toUserUpdateResponseDTO(user);
+    return ResponseEntity.ok(userUpdateResponseDTO);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody User user) {
-    // Logic to handle update request
-    return ResponseEntity.ok(user);
+  @PatchMapping(
+      value = USER_UPDATE_ATTRIBUTE,
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttribute(
+      @PathVariable long id,
+      @RequestBody @Valid UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
+    User user = userService.getUser(id);
+    UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, user);
+    user = userService.updateUserAttribute(user);
+    final UserUpdateAttributeResponseDTO userUpdateAttributeResponseDTO =
+        UserMapper.INSTANCE.toUserUpdateAttributeResponseDTO(user);
+    return ResponseEntity.ok(userUpdateAttributeResponseDTO);
   }
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<User> updateUserAttributes(@PathVariable long id, @RequestBody User user) {
-    // Logic to handle patch request
-    return ResponseEntity.ok(user);
-  }
-
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = USER_DELETE, consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-    // Logic to handle delete request
+    userService.deleteUser(id);
     return ResponseEntity.notFound().build();
   }
 }
