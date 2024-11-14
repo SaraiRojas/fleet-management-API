@@ -18,6 +18,7 @@ import com.course.fleet.management.api.dto.response.UserUpdateAttributeResponseD
 import com.course.fleet.management.api.dto.response.UserUpdateResponseDTO;
 import com.course.fleet.management.api.mapper.UserMapper;
 import com.course.fleet.management.api.service.UserService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class UserController {
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserCreateResponseDTO> createUser(
-      @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
+      @RequestBody @Valid UserCreateRequestDTO userCreateRequestDTO) {
     User newUser = UserMapper.INSTANCE.toUser(userCreateRequestDTO);
     newUser = userService.create(newUser);
     final UserCreateResponseDTO userCreateResponseDTO =
@@ -70,7 +71,7 @@ public class UserController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateResponseDTO> updateUser(
-      @PathVariable long id, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+      @PathVariable long id, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO) {
     User user = userService.getUser(id);
     UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, user);
     user = userService.updateUser(user);
@@ -85,7 +86,7 @@ public class UserController {
       produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttribute(
       @PathVariable long id,
-      @RequestBody UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
+      @RequestBody @Valid UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
     User user = userService.getUser(id);
     UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, user);
     user = userService.updateUserAttribute(user);
