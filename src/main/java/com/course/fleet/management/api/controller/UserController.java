@@ -1,5 +1,13 @@
 package com.course.fleet.management.api.controller;
 
+import static com.course.fleet.management.api.constants.UriConstant.USER_BASE_URL;
+import static com.course.fleet.management.api.constants.UriConstant.USER_BY_ID;
+import static com.course.fleet.management.api.constants.UriConstant.USER_DELETE;
+import static com.course.fleet.management.api.constants.UriConstant.USER_GET_ALL;
+import static com.course.fleet.management.api.constants.UriConstant.USER_UPDATE;
+import static com.course.fleet.management.api.constants.UriConstant.USER_UPDATE_ATTRIBUTE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.course.fleet.management.api.domain.User;
 import com.course.fleet.management.api.dto.request.UserCreateRequestDTO;
 import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO;
@@ -27,12 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping("/user")
+@RequestMapping(value = USER_BASE_URL)
 public class UserController {
 
   private final UserService userService;
 
-  @GetMapping("/all")
+  @GetMapping(value = USER_GET_ALL, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<List<UserResponseDTO>> getUsers() {
     final List<User> userList = userService.getAll();
     final List<UserResponseDTO> userListResponseDTO =
@@ -40,14 +48,14 @@ public class UserController {
     return ResponseEntity.ok(userListResponseDTO);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(value = USER_BY_ID, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserResponseDTO> getUser(@PathVariable long id) {
     final User userById = userService.getUser(id);
     final UserResponseDTO userResponseDTO = UserMapper.INSTANCE.toUserResponseDTO(userById);
     return ResponseEntity.ok(userResponseDTO);
   }
 
-  @PostMapping
+  @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserCreateResponseDTO> createUser(
       @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
     User newUser = UserMapper.INSTANCE.toUser(userCreateRequestDTO);
@@ -57,7 +65,10 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(userCreateResponseDTO);
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(
+      value = USER_UPDATE,
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateResponseDTO> updateUser(
       @PathVariable long id, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
     User user = userService.getUser(id);
@@ -68,8 +79,11 @@ public class UserController {
     return ResponseEntity.ok(userUpdateResponseDTO);
   }
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttributes(
+  @PatchMapping(
+      value = USER_UPDATE_ATTRIBUTE,
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttribute(
       @PathVariable long id,
       @RequestBody UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
     User user = userService.getUser(id);
@@ -80,7 +94,7 @@ public class UserController {
     return ResponseEntity.ok(userUpdateAttributeResponseDTO);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = USER_DELETE, consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
     userService.deleteUser(id);
     return ResponseEntity.notFound().build();

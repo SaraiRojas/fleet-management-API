@@ -1,5 +1,8 @@
 package com.course.fleet.management.api.service.impl;
 
+import static com.course.fleet.management.api.constants.CustomErrorMessage.USER_ALREADY_EXISTS;
+import static com.course.fleet.management.api.constants.CustomErrorMessage.USER_NOT_FOUND;
+
 import com.course.fleet.management.api.domain.User;
 import com.course.fleet.management.api.exception.customExceptions.UserAlreadyExistsException;
 import com.course.fleet.management.api.exception.customExceptions.UserNotFoundException;
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
     final String duplicateEmail = "duplicateEmail@email.com";
 
     if (Objects.equals(user.getEmail(), duplicateEmail)) {
-      throw new UserAlreadyExistsException("User already exists");
+      throw new UserAlreadyExistsException(USER_ALREADY_EXISTS);
     }
 
     return user;
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
         users.stream()
             .filter(user -> user.getId() == id)
             .findFirst()
-            .orElseThrow(() -> new UserNotFoundException("User is not found"));
+            .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
     return userById;
   }
