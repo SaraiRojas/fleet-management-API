@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import com.course.fleet.management.api.dto.response.CustomErrorResponseDTO;
 import com.course.fleet.management.api.exception.customExceptions.CustomAbstractException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -41,15 +43,11 @@ public class GlobalExceptionHandler {
             .path(request.getRequestURI())
             .build();
 
-    bindingResult
-        .getFieldErrors()
-        .forEach(
-            fieldError -> {
-              System.out.println(fieldError);
-              customErrorResponseDTO.setErrorMessage(fieldError.getDefaultMessage());
-              customErrorResponseDTO.setField(fieldError.getField());
-              customErrorResponseDTO.setValue(getJakartaValue(fieldError));
-            });
+    final FieldError firstFieldError = bindingResult.getFieldErrors().get(0);
+
+    customErrorResponseDTO.setErrorMessage(firstFieldError.getDefaultMessage());
+    customErrorResponseDTO.setField(firstFieldError.getField());
+    customErrorResponseDTO.setValue(getJakartaValue(firstFieldError));
 
     return ResponseEntity.status(customErrorResponseDTO.getStatusCode())
         .body(customErrorResponseDTO);
