@@ -53,6 +53,6 @@ public abstract class CustomAbstractException extends RuntimeException {
         }
       }
     }
-    return HttpStatus.NOT_FOUND;
+    return HttpStatus.INTERNAL_SERVER_ERROR;
   }
 }
