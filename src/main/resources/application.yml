@@ -1,0 +1,19 @@
+spring:
+  application:
+  name: fleet management API
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 1234
+    jpa:
+      hibernate:
+        ddl-auto: create
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+server:
+  servlet:
+    context-path: /fleet-management-api
