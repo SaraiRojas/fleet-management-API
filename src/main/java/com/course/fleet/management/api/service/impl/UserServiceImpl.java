@@ -11,7 +11,6 @@ import com.course.fleet.management.api.mapper.UserMapper;
 import com.course.fleet.management.api.repository.UserRepository;
 import com.course.fleet.management.api.service.UserService;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,27 +44,19 @@ public class UserServiceImpl implements UserService {
   @Override
   public User updateUser(UserUpdateRequestDTO userUpdateRequestDTO, Long id) {
     User currentUser = findById(id);
+    User updatedUser = UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, currentUser);
 
-    if (!Objects.equals(id, currentUser.getId())) {
-      User updatedUser = UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, currentUser);
-      return save(updatedUser);
-    }
-
-    throw new RuntimeException("ID don´t match");
+    return save(updatedUser);
   }
 
   @Override
   public User updateUserAttribute(
       UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO, Long id) {
     User currentUser = findById(id);
+    User updatedUser =
+        UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, currentUser);
 
-    if (!Objects.equals(id, currentUser.getId())) {
-      User updatedUser =
-          UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, currentUser);
-      return save(updatedUser);
-    }
-
-    throw new RuntimeException("ID don´t match");
+    return save(updatedUser);
   }
 
   @Override
