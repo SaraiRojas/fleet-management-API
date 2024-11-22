@@ -1,81 +1,92 @@
 package com.course.fleet.management.api.service.impl;
 
-import static com.course.fleet.management.api.constants.CustomErrorMessage.USER_ALREADY_EXISTS;
 import static com.course.fleet.management.api.constants.CustomErrorMessage.USER_NOT_FOUND;
 
 import com.course.fleet.management.api.domain.User;
-import com.course.fleet.management.api.exception.customExceptions.UserAlreadyExistsException;
+import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO;
+import com.course.fleet.management.api.entity.UserEntity;
 import com.course.fleet.management.api.exception.customExceptions.UserNotFoundException;
+import com.course.fleet.management.api.mapper.UserMapper;
+import com.course.fleet.management.api.repository.UserRepository;
 import com.course.fleet.management.api.service.UserService;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.datafaker.Faker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
 
-  private static final List<User> users;
-
-  static {
-    Faker faker = new Faker();
-    users =
-        IntStream.range(0, 10)
-            .mapToObj(
-                i -> {
-                  String firstName = faker.name().firstName();
-                  String lastName = faker.name().lastName();
-                  return new User(
-                      (long) i,
-                      firstName + " " + lastName,
-                      firstName + "." + lastName + "@mail.com");
-                })
-            .collect(Collectors.toList());
-  }
+  private final UserRepository userRepository;
 
   @Override
   public User create(User user) {
-    // fake data to be able to test exception
-    final String duplicateEmail = "duplicateEmail@email.com";
-
-    if (Objects.equals(user.getEmail(), duplicateEmail)) {
-      throw new UserAlreadyExistsException(USER_ALREADY_EXISTS);
-    }
-
-    return user;
+    return save(user);
   }
 
   @Override
   public List<User> getAll() {
-    return users;
+    final List<UserEntity> userEntities = userRepository.findAll();
+    return UserMapper.INSTANCE.toUserList(userEntities);
   }
 
   @Override
-  public User getUser(long id) {
-    final User userById;
-    userById =
-        users.stream()
-            .filter(user -> user.getId() == id)
-            .findFirst()
+  public User getUser(Long userId) {
+
+    return findById(userId);
+  }
+
+  @Override
+  public User updateUser(UserUpdateRequestDTO userUpdateRequestDTO, Long id) {
+    User currentUser = findById(id);
+
+    if (!Objects.equals(id, currentUser.getId())) {
+      User updatedUser = UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, currentUser);
+      return save(updatedUser);
+    }
+
+    throw new RuntimeException("ID don´t match");
+  }
+
+  @Override
+  public User updateUserAttribute(
+      UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO, Long id) {
+    User currentUser = findById(id);
+
+    if (!Objects.equals(id, currentUser.getId())) {
+      User updatedUser =
+          UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, currentUser);
+      return save(updatedUser);
+    }
+
+    throw new RuntimeException("ID don´t match");
+  }
+
+  @Override
+  public void deleteUser(Long userId) {
+    Optional<User> user = Optional.ofNullable(findById(userId));
+    user.ifPresent(value -> userRepository.deleteById(value.getId()));
+  }
+
+  private User save(User user) {
+    UserEntity userEntity = UserMapper.INSTANCE.toUserEntity(user);
+    userEntity = userRepository.save(userEntity);
+
+    return UserMapper.INSTANCE.toUser(userEntity);
+  }
+
+  private User findById(Long userId) {
+    UserEntity userEntity =
+        userRepository
+            .findById(userId)
             .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-    return userById;
+    return UserMapper.INSTANCE.toUser(userEntity);
   }
-
-  @Override
-  public User updateUser(User user) {
-    return user;
-  }
-
-  @Override
-  public User updateUserAttribute(User user) {
-    return user;
-  }
-
-  @Override
-  public void deleteUser(long id) {}
 }

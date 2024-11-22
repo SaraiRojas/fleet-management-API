@@ -50,7 +50,7 @@ public class UserController {
   }
 
   @GetMapping(value = USER_BY_ID, produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<UserResponseDTO> getUser(@PathVariable long id) {
+  public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long id) {
     final User userById = userService.getUser(id);
     final UserResponseDTO userResponseDTO = UserMapper.INSTANCE.toUserResponseDTO(userById);
     return ResponseEntity.ok(userResponseDTO);
@@ -71,10 +71,8 @@ public class UserController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateResponseDTO> updateUser(
-      @PathVariable long id, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO) {
-    User user = userService.getUser(id);
-    UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, user);
-    user = userService.updateUser(user);
+      @PathVariable Long id, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO) {
+    User user = userService.updateUser(userUpdateRequestDTO, id);
     final UserUpdateResponseDTO userUpdateResponseDTO =
         UserMapper.INSTANCE.toUserUpdateResponseDTO(user);
     return ResponseEntity.ok(userUpdateResponseDTO);
@@ -85,18 +83,16 @@ public class UserController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttribute(
-      @PathVariable long id,
+      @PathVariable Long id,
       @RequestBody @Valid UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
-    User user = userService.getUser(id);
-    UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, user);
-    user = userService.updateUserAttribute(user);
+    User user = userService.updateUserAttribute(userUpdateAttributeRequestDTO, id);
     final UserUpdateAttributeResponseDTO userUpdateAttributeResponseDTO =
         UserMapper.INSTANCE.toUserUpdateAttributeResponseDTO(user);
     return ResponseEntity.ok(userUpdateAttributeResponseDTO);
   }
 
-  @DeleteMapping(value = USER_DELETE, consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+  @DeleteMapping(value = USER_DELETE)
+  public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
     return ResponseEntity.notFound().build();
   }

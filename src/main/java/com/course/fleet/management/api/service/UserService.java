@@ -1,6 +1,8 @@
 package com.course.fleet.management.api.service;
 
 import com.course.fleet.management.api.domain.User;
+import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO;
+import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO;
 import java.util.List;
 
 public interface UserService {
@@ -8,11 +10,11 @@ public interface UserService {
 
   List<User> getAll();
 
-  User getUser(long id);
+  User getUser(Long id);
 
-  User updateUser(User user);
+  User updateUser(UserUpdateRequestDTO userUpdateRequestDTO, Long id);
 
-  User updateUserAttribute(User user);
+  User updateUserAttribute(UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO, Long id);
 
-  void deleteUser(long id);
+  void deleteUser(Long id);
 }
