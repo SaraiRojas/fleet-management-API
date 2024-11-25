@@ -11,7 +11,6 @@ import com.course.fleet.management.api.mapper.UserMapper;
 import com.course.fleet.management.api.repository.UserRepository;
 import com.course.fleet.management.api.service.UserService;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +60,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(Long userId) {
-    Optional<User> user = Optional.ofNullable(findById(userId));
-    user.ifPresent(value -> userRepository.deleteById(value.getId()));
+    User user = findById(userId);
+    userRepository.deleteById(user.getId());
   }
 
   private User save(User user) {
