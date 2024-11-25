@@ -41,7 +41,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'net.datafaker:datafaker:2.4.0'
 
 	// Mapstruct
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
@@ -55,6 +54,10 @@ dependencies {
 
 	// Support for Jakarta validations
 	implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+
+	// DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.5'
+	implementation 'org.postgresql:postgresql'
 
 }
 

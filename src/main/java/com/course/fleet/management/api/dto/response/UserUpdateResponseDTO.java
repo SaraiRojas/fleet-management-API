@@ -1,3 +1,3 @@
 package com.course.fleet.management.api.dto.response;
 
-public record UserUpdateResponseDTO(long id, String name, String email) {}
+public record UserUpdateResponseDTO(Long id, String name, String email) {}
