@@ -10,6 +10,8 @@ public class CustomErrorMessage {
   public static final String USER_NOT_FOUND = "The user has not been found";
   public static final String BAD_REQUEST = "The given resource is malformed";
 
+  public static final String TAXI_NOT_FOUND = "The taxi has not been found";
+
   public static final String MANDATORY_NAME = "Name is required";
   public static final String MANDATORY_EMAIL = "Email is required";
   public static final String VALID_EMAIL = "Please provide a valid email address";
