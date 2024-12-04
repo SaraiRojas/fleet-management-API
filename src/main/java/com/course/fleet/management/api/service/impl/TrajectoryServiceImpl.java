@@ -1,0 +1,55 @@
+package com.course.fleet.management.api.service.impl;
+
+import static com.course.fleet.management.api.constants.CustomErrorMessage.LATEST_TRAJECTORIES_NOT_FOUND;
+import static com.course.fleet.management.api.constants.CustomErrorMessage.TRAJECTORY_NOT_FOUND;
+import static com.course.fleet.management.api.util.DateTimeUtils.getDateAtEndOfDay;
+import static com.course.fleet.management.api.util.DateTimeUtils.getDateAtStartOfDay;
+
+import com.course.fleet.management.api.domain.Trajectory;
+import com.course.fleet.management.api.entity.TrajectoryEntity;
+import com.course.fleet.management.api.exception.customExceptions.TrajectoryNotFoundException;
+import com.course.fleet.management.api.mapper.TrajectoryMapper;
+import com.course.fleet.management.api.repository.TrajectoryRepository;
+import com.course.fleet.management.api.service.TrajectoryService;
+import java.time.LocalDateTime;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class TrajectoryServiceImpl implements TrajectoryService {
+
+  private final TrajectoryRepository trajectoryRepository;
+
+  @Override
+  public List<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date) {
+
+    LocalDateTime dateTimeStartOfDay = getDateAtStartOfDay(date);
+    LocalDateTime dateTimeEndOfDay = getDateAtEndOfDay(date);
+
+    final List<TrajectoryEntity> trajectoryEntities =
+        trajectoryRepository
+            .findByTaxiIdAndDateBetween(taxiId, dateTimeStartOfDay, dateTimeEndOfDay)
+            .orElseThrow(() -> new TrajectoryNotFoundException(TRAJECTORY_NOT_FOUND));
+
+    if (trajectoryEntities.isEmpty()) {
+      throw new TrajectoryNotFoundException(TRAJECTORY_NOT_FOUND);
+    }
+
+    return TrajectoryMapper.INSTANCE.toTrajectoryList(trajectoryEntities);
+  }
+
+  @Override
+  public List<Trajectory> getLatestTaxisTrajectories() {
+
+    final List<TrajectoryEntity> trajectoryEntities =
+        trajectoryRepository
+            .findLatestTrajectories()
+            .orElseThrow(() -> new TrajectoryNotFoundException(LATEST_TRAJECTORIES_NOT_FOUND));
+    return TrajectoryMapper.INSTANCE.toTrajectoryList(trajectoryEntities);
+  }
+}

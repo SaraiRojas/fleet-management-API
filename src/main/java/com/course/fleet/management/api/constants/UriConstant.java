@@ -18,4 +18,12 @@ public class UriConstant {
   public static final String TAXI_BASE_URL = "/taxi";
   public static final String TAXI_GET_ALL = "/all";
   public static final String TAXI_GET_BY_PLATE = "/{plate}";
+
+  // Trajectory
+
+  public static final String TRAJECTORY_BASE_URL = "/trajectory";
+
+  public static final String TAXI_TRAJECTORY = "/{taxiId}";
+
+  public static final String LATEST_TRAJECTORIES = "/latest";
 }

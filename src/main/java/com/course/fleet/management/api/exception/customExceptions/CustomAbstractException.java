@@ -26,7 +26,11 @@ public abstract class CustomAbstractException extends RuntimeException {
   static {
     statusMap.put(NOT_FOUND, List.of(UserNotFoundException.class));
     statusMap.put(
-        BAD_REQUEST, List.of(UserAlreadyExistsException.class, BadRequestException.class));
+        BAD_REQUEST,
+        List.of(
+            UserAlreadyExistsException.class,
+            BadRequestException.class,
+            TrajectoryNotFoundException.class));
   }
 
   public CustomAbstractException(String customErrorMessage) {
