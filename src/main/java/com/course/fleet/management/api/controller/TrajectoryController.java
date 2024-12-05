@@ -33,9 +33,9 @@ public class TrajectoryController {
   public ResponseEntity<Page<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate(
       @PathVariable Long taxiId, @RequestParam String date, Pageable pageable) {
 
-    Page<Trajectory> trajectoryPage =
+    final Page<Trajectory> trajectoryPage =
         trajectoryService.getTaxiTrajectoryByDate(taxiId, date, pageable);
-    Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
+    final Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
         TrajectoryMapper.INSTANCE.toTrajectoryResponseDTOPage(trajectoryPage, pageable);
     return trajectoryPageResponseDTO.isEmpty()
         ? ResponseEntity.noContent().build()
@@ -45,8 +45,9 @@ public class TrajectoryController {
   @GetMapping(value = LATEST_TRAJECTORIES, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<TrajectoryResponseDTO>> getLatestTaxisTrajectories(Pageable pageable) {
 
-    Page<Trajectory> trajectoriesPage = trajectoryService.getLatestTaxisTrajectories(pageable);
-    Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
+    final Page<Trajectory> trajectoriesPage =
+        trajectoryService.getLatestTaxisTrajectories(pageable);
+    final Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
         TrajectoryMapper.INSTANCE.toTrajectoryResponseDTOPage(trajectoriesPage, pageable);
     return trajectoryPageResponseDTO.isEmpty()
         ? ResponseEntity.noContent().build()

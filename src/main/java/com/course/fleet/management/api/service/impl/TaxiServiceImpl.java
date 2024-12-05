@@ -33,7 +33,7 @@ public class TaxiServiceImpl implements TaxiService {
   }
 
   private Taxi findByPlate(String plate) {
-    TaxiEntity taxiEntity =
+    final TaxiEntity taxiEntity =
         taxiRepository
             .findByPlate(plate)
             .orElseThrow(() -> new UserNotFoundException(TAXI_NOT_FOUND));

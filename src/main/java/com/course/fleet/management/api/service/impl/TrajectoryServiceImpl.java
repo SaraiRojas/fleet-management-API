@@ -29,8 +29,8 @@ public class TrajectoryServiceImpl implements TrajectoryService {
   @Override
   public Page<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date, Pageable pageable) {
 
-    LocalDateTime dateTimeStartOfDay = getDateAtStartOfDay(date);
-    LocalDateTime dateTimeEndOfDay = getDateAtEndOfDay(date);
+    final LocalDateTime dateTimeStartOfDay = getDateAtStartOfDay(date);
+    final LocalDateTime dateTimeEndOfDay = getDateAtEndOfDay(date);
 
     final Page<TrajectoryEntity> trajectoryEntities =
         trajectoryRepository
