@@ -9,10 +9,11 @@ import com.course.fleet.management.api.domain.Trajectory;
 import com.course.fleet.management.api.dto.response.TrajectoryResponseDTO;
 import com.course.fleet.management.api.mapper.TrajectoryMapper;
 import com.course.fleet.management.api.service.TrajectoryService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,21 +30,26 @@ public class TrajectoryController {
   private final TrajectoryService trajectoryService;
 
   @GetMapping(value = TAXI_TRAJECTORY, produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate(
-      @PathVariable Long taxiId, @RequestParam String date) {
+  public ResponseEntity<Page<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate(
+      @PathVariable Long taxiId, @RequestParam String date, Pageable pageable) {
 
-    List<Trajectory> trajectoriesList = trajectoryService.getTaxiTrajectoryByDate(taxiId, date);
-    List<TrajectoryResponseDTO> trajectoryListResponseDTO =
-        TrajectoryMapper.INSTANCE.toListTrajectoryResponseDTO(trajectoriesList);
-    return ResponseEntity.ok(trajectoryListResponseDTO);
+    Page<Trajectory> trajectoryPage =
+        trajectoryService.getTaxiTrajectoryByDate(taxiId, date, pageable);
+    Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
+        TrajectoryMapper.INSTANCE.toTrajectoryResponseDTOPage(trajectoryPage, pageable);
+    return trajectoryPageResponseDTO.isEmpty()
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(trajectoryPageResponseDTO);
   }
 
   @GetMapping(value = LATEST_TRAJECTORIES, produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate() {
+  public ResponseEntity<Page<TrajectoryResponseDTO>> getLatestTaxisTrajectories(Pageable pageable) {
 
-    List<Trajectory> trajectoriesList = trajectoryService.getLatestTaxisTrajectories();
-    List<TrajectoryResponseDTO> trajectoryListResponseDTO =
-        TrajectoryMapper.INSTANCE.toListTrajectoryResponseDTO(trajectoriesList);
-    return ResponseEntity.ok(trajectoryListResponseDTO);
+    Page<Trajectory> trajectoriesPage = trajectoryService.getLatestTaxisTrajectories(pageable);
+    Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =
+        TrajectoryMapper.INSTANCE.toTrajectoryResponseDTOPage(trajectoriesPage, pageable);
+    return trajectoryPageResponseDTO.isEmpty()
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(trajectoryPageResponseDTO);
   }
 }

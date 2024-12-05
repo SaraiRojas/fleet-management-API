@@ -12,10 +12,11 @@ import com.course.fleet.management.api.mapper.TrajectoryMapper;
 import com.course.fleet.management.api.repository.TrajectoryRepository;
 import com.course.fleet.management.api.service.TrajectoryService;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,30 +27,35 @@ public class TrajectoryServiceImpl implements TrajectoryService {
   private final TrajectoryRepository trajectoryRepository;
 
   @Override
-  public List<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date) {
+  public Page<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date, Pageable pageable) {
 
     LocalDateTime dateTimeStartOfDay = getDateAtStartOfDay(date);
     LocalDateTime dateTimeEndOfDay = getDateAtEndOfDay(date);
 
-    final List<TrajectoryEntity> trajectoryEntities =
+    final Page<TrajectoryEntity> trajectoryEntities =
         trajectoryRepository
-            .findByTaxiIdAndDateBetween(taxiId, dateTimeStartOfDay, dateTimeEndOfDay)
+            .findByTaxiIdAndDateBetween(taxiId, dateTimeStartOfDay, dateTimeEndOfDay, pageable)
             .orElseThrow(() -> new TrajectoryNotFoundException(TRAJECTORY_NOT_FOUND));
 
     if (trajectoryEntities.isEmpty()) {
       throw new TrajectoryNotFoundException(TRAJECTORY_NOT_FOUND);
     }
 
-    return TrajectoryMapper.INSTANCE.toTrajectoryList(trajectoryEntities);
+    return TrajectoryMapper.INSTANCE.toTrajectoryPage(trajectoryEntities, pageable);
   }
 
   @Override
-  public List<Trajectory> getLatestTaxisTrajectories() {
+  public Page<Trajectory> getLatestTaxisTrajectories(Pageable pageable) {
 
-    final List<TrajectoryEntity> trajectoryEntities =
+    final Page<TrajectoryEntity> trajectoryEntities =
         trajectoryRepository
-            .findLatestTrajectories()
+            .findLatestTrajectories(pageable)
             .orElseThrow(() -> new TrajectoryNotFoundException(LATEST_TRAJECTORIES_NOT_FOUND));
-    return TrajectoryMapper.INSTANCE.toTrajectoryList(trajectoryEntities);
+
+    if (trajectoryEntities.isEmpty()) {
+      throw new TrajectoryNotFoundException(LATEST_TRAJECTORIES_NOT_FOUND);
+    }
+
+    return TrajectoryMapper.INSTANCE.toTrajectoryPage(trajectoryEntities, pageable);
   }
 }

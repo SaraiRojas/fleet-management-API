@@ -1,11 +1,12 @@
 package com.course.fleet.management.api.service;
 
 import com.course.fleet.management.api.domain.Trajectory;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TrajectoryService {
 
-  List<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date);
+  Page<Trajectory> getTaxiTrajectoryByDate(Long taxiId, String date, Pageable pageable);
 
-  List<Trajectory> getLatestTaxisTrajectories();
+  Page<Trajectory> getLatestTaxisTrajectories(Pageable pageable);
 }
