@@ -72,7 +72,7 @@ public class UserController {
       produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserUpdateResponseDTO> updateUser(
       @PathVariable Long id, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO) {
-    User user = userService.updateUser(userUpdateRequestDTO, id);
+    final User user = userService.updateUser(userUpdateRequestDTO, id);
     final UserUpdateResponseDTO userUpdateResponseDTO =
         UserMapper.INSTANCE.toUserUpdateResponseDTO(user);
     return ResponseEntity.ok(userUpdateResponseDTO);
@@ -85,7 +85,7 @@ public class UserController {
   public ResponseEntity<UserUpdateAttributeResponseDTO> updateUserAttribute(
       @PathVariable Long id,
       @RequestBody @Valid UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO) {
-    User user = userService.updateUserAttribute(userUpdateAttributeRequestDTO, id);
+    final User user = userService.updateUserAttribute(userUpdateAttributeRequestDTO, id);
     final UserUpdateAttributeResponseDTO userUpdateAttributeResponseDTO =
         UserMapper.INSTANCE.toUserUpdateAttributeResponseDTO(user);
     return ResponseEntity.ok(userUpdateAttributeResponseDTO);

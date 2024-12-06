@@ -42,15 +42,15 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User updateUser(UserUpdateRequestDTO userUpdateRequestDTO, Long id) {
-    User currentUser = findById(id);
-    User updatedUser = UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, currentUser);
+    final User currentUser = findById(id);
+    final User updatedUser = UserMapper.INSTANCE.toUserUpdate(userUpdateRequestDTO, currentUser);
 
     return save(updatedUser);
   }
 
   @Override
   public User updateUserAttribute(
-      UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO, Long id) {
+      final UserUpdateAttributeRequestDTO userUpdateAttributeRequestDTO, Long id) {
     User currentUser = findById(id);
     User updatedUser =
         UserMapper.INSTANCE.toUserUpdateAttribute(userUpdateAttributeRequestDTO, currentUser);
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(Long userId) {
-    User user = findById(userId);
+    final User user = findById(userId);
     userRepository.deleteById(user.getId());
   }
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
   }
 
   private User findById(Long userId) {
-    UserEntity userEntity =
+    final UserEntity userEntity =
         userRepository
             .findById(userId)
             .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
