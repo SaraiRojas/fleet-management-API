@@ -9,6 +9,7 @@ import com.course.fleet.management.api.domain.Trajectory;
 import com.course.fleet.management.api.dto.response.TrajectoryResponseDTO;
 import com.course.fleet.management.api.mapper.TrajectoryMapper;
 import com.course.fleet.management.api.service.TrajectoryService;
+import com.course.fleet.management.api.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class TrajectoryController {
   @GetMapping(value = TAXI_TRAJECTORY, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate(
       @PathVariable Long taxiId, @RequestParam String date, Pageable pageable) {
-
+    DateTimeUtils.ValidateDateFormat(date);
     final Page<Trajectory> trajectoryPage =
         trajectoryService.getTaxiTrajectoryByDate(taxiId, date, pageable);
     final Page<TrajectoryResponseDTO> trajectoryPageResponseDTO =

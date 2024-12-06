@@ -24,13 +24,14 @@ public abstract class CustomAbstractException extends RuntimeException {
   private static final Map<HttpStatus, List<Class>> statusMap = new HashMap<>();
 
   static {
-    statusMap.put(NOT_FOUND, List.of(UserNotFoundException.class));
+    statusMap.put(
+        NOT_FOUND, List.of(UserNotFoundException.class, TrajectoryNotFoundException.class));
     statusMap.put(
         BAD_REQUEST,
         List.of(
             UserAlreadyExistsException.class,
             BadRequestException.class,
-            TrajectoryNotFoundException.class));
+            InvalidFormatException.class));
   }
 
   public CustomAbstractException(String customErrorMessage) {

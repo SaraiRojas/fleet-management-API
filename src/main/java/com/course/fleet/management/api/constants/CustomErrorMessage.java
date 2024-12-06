@@ -21,4 +21,6 @@ public class CustomErrorMessage {
   public static final String MANDATORY_NAME = "Name is required";
   public static final String MANDATORY_EMAIL = "Email is required";
   public static final String VALID_EMAIL = "Please provide a valid email address";
+
+  public static final String INVALID_DATE_FORMAT = "Invalid date format. Please use 'YYYY-MM-DD'";
 }
