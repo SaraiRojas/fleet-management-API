@@ -2,7 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id "com.diffplug.spotless" version "6.24.0"
+	id 'com.diffplug.spotless' version '6.24.0'
+	id 'groovy'
 }
 
 group = 'com.course'
@@ -58,6 +59,13 @@ dependencies {
 	// DB
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.5'
 	implementation 'org.postgresql:postgresql'
+
+	// TESTING
+	testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
+	testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.codehaus.gmavenplus:gmavenplus-plugin:3.0.2'
 
 }
 
