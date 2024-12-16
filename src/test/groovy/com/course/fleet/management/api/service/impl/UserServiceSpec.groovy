@@ -1,9 +1,9 @@
 package com.course.fleet.management.api.service.impl
 
-import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO
+
 import com.course.fleet.management.api.repository.UserRepository
 import com.course.fleet.management.api.utils.TestUtils
-import com.course.fleet.management.api.utils.UserMock
+import com.course.fleet.management.api.utils.TestConstants
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -24,9 +24,9 @@ class UserServiceSpec extends Specification{
 
         then:
         1 * userRepository.save({
-            it.name == UserMock.NAME
-            it.email == UserMock.EMAIL
-            it.id == UserMock.ID
+            it.name == TestConstants.NAME
+            it.email == TestConstants.EMAIL
+            it.id == TestConstants.ID
         }) >> userEntity
         noExceptionThrown()
     }
@@ -49,10 +49,10 @@ class UserServiceSpec extends Specification{
         def userEntity = TestUtils.buildUserEntity()
 
         when:
-        subject.getUser(UserMock.ID)
+        subject.getUser(TestConstants.ID)
 
         then:
-        1 * userRepository.findById(UserMock.ID) >> Optional.of(userEntity)
+        1 * userRepository.findById(TestConstants.ID) >> Optional.of(userEntity)
         noExceptionThrown()
     }
 
@@ -61,16 +61,16 @@ class UserServiceSpec extends Specification{
         def userUpdateDTO = TestUtils.buildUserUpdateRequestDTO()
         def userEntity = TestUtils.buildUserEntity()
 
-        userRepository.findById(UserMock.ID) >> Optional.of(userEntity)
+        userRepository.findById(TestConstants.ID) >> Optional.of(userEntity)
 
         when:
-        subject.updateUser(userUpdateDTO, UserMock.ID)
+        subject.updateUser(userUpdateDTO, TestConstants.ID)
 
         then:
         1 * userRepository.save({
-            it.name == UserMock.NAME
-            it.email == UserMock.EMAIL
-            it.id == UserMock.ID
+            it.name == TestConstants.NAME
+            it.email == TestConstants.EMAIL
+            it.id == TestConstants.ID
         }) >> userEntity
         noExceptionThrown()
     }
@@ -80,16 +80,16 @@ class UserServiceSpec extends Specification{
         def userUpdateAttributeDTO = TestUtils.buildUserUpdateAttributeRequestDTO()
         def userEntity = TestUtils.buildUserEntity()
 
-        userRepository.findById(UserMock.ID) >> Optional.of(userEntity)
+        userRepository.findById(TestConstants.ID) >> Optional.of(userEntity)
 
         when:
-        subject.updateUserAttribute(userUpdateAttributeDTO, UserMock.ID)
+        subject.updateUserAttribute(userUpdateAttributeDTO, TestConstants.ID)
 
         then:
         1 * userRepository.save({
-            it.name == UserMock.NAME
-            it.email == UserMock.EMAIL
-            it.id == UserMock.ID
+            it.name == TestConstants.NAME
+            it.email == TestConstants.EMAIL
+            it.id == TestConstants.ID
         }) >> userEntity
         noExceptionThrown()
     }
@@ -97,13 +97,13 @@ class UserServiceSpec extends Specification{
     def "DeleteUser - should call once userRepository"() {
         given:
         def userEntity = TestUtils.buildUserEntity()
-        userRepository.findById(UserMock.ID) >> Optional.of(userEntity)
+        userRepository.findById(TestConstants.ID) >> Optional.of(userEntity)
 
         when:
-        subject.deleteUser(UserMock.ID)
+        subject.deleteUser(TestConstants.ID)
 
         then:
-        1 * userRepository.deleteById(UserMock.ID)
+        1 * userRepository.deleteById(TestConstants.ID)
         noExceptionThrown()
     }
 }

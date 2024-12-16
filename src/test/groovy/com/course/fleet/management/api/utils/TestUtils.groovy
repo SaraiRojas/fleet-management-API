@@ -1,13 +1,16 @@
 package com.course.fleet.management.api.utils
 
+import com.course.fleet.management.api.domain.Taxi
 import com.course.fleet.management.api.domain.User
 import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO
 import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO
+import com.course.fleet.management.api.entity.TaxiEntity
 import com.course.fleet.management.api.entity.UserEntity
 
-import static com.course.fleet.management.api.utils.UserMock.NAME
-import static com.course.fleet.management.api.utils.UserMock.EMAIL
-import static com.course.fleet.management.api.utils.UserMock.ID
+import static TestConstants.NAME
+import static TestConstants.EMAIL
+import static TestConstants.ID
+import static TestConstants.PLATE
 
 
 class TestUtils {
@@ -39,4 +42,24 @@ class TestUtils {
     static List<UserEntity> buildUserEntityList() {
         return Arrays.asList(buildUserEntity())
     }
+
+    static TaxiEntity buildTaxiEntity() {
+        return TaxiEntity.builder()
+                .id(ID)
+                .plate(PLATE)
+                .build()
+    }
+
+    static Taxi buildTaxi() {
+        return Taxi.builder()
+                .id(ID)
+                .plate(PLATE)
+                .build()
+    }
+
+    static List<TaxiEntity> buildTaxiEntityList() {
+        return Arrays.asList(buildTaxiEntity())
+    }
+
+
 }
