@@ -3,9 +3,7 @@ spring:
   name: fleet management API
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://db-fleet-management.postgres.database.azure.com:5432/postgres?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=require
     jpa:
       hibernate:
         ddl-auto: create
