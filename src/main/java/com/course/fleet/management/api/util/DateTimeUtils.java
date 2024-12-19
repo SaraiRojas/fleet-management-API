@@ -5,7 +5,6 @@ import static com.course.fleet.management.api.constants.CustomErrorMessage.INVAL
 import com.course.fleet.management.api.exception.customExceptions.InvalidFormatException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 public class DateTimeUtils {
@@ -25,6 +24,6 @@ public class DateTimeUtils {
 
   public static LocalDateTime getDateAtEndOfDay(String date) {
     final LocalDate dateParsed = LocalDate.parse(date);
-    return dateParsed.atTime(LocalTime.MAX);
+    return dateParsed.atTime(23, 59, 59);
   }
 }

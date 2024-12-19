@@ -5,12 +5,19 @@ import com.course.fleet.management.api.domain.User
 import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO
 import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO
 import com.course.fleet.management.api.entity.TaxiEntity
+import com.course.fleet.management.api.entity.TrajectoryEntity
 import com.course.fleet.management.api.entity.UserEntity
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 
 import static TestConstants.NAME
 import static TestConstants.EMAIL
 import static TestConstants.ID
 import static TestConstants.PLATE
+import static TestConstants.LONGITUDE
+import static TestConstants.LATITUDE
+import static com.course.fleet.management.api.utils.TestConstants.DATE_START_DAY
 
 
 class TestUtils {
@@ -61,5 +68,21 @@ class TestUtils {
         return Arrays.asList(buildTaxiEntity())
     }
 
+    static TrajectoryEntity buildTrajectoryEntity() {
+        return TrajectoryEntity.builder()
+                .id(ID)
+                .date(DATE_START_DAY)
+                .taxiId(ID)
+                .latitude(LATITUDE)
+                .longitude(LONGITUDE)
+                .build()
+    }
 
+    static List<TrajectoryEntity> buildTrajectoryEntityList() {
+        return Arrays.asList(buildTrajectoryEntity())
+    }
+
+    static Page<TrajectoryEntity> buildTrajectoryEntityPage() {
+        return new PageImpl<>(buildTrajectoryEntityList(), TestConstants.PAGEABLE as Pageable, buildTrajectoryEntityList().size())
+    }
 }
