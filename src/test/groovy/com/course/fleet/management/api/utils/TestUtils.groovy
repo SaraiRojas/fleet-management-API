@@ -2,6 +2,7 @@ package com.course.fleet.management.api.utils
 
 import com.course.fleet.management.api.domain.Taxi
 import com.course.fleet.management.api.domain.User
+import com.course.fleet.management.api.dto.request.UserCreateRequestDTO
 import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO
 import com.course.fleet.management.api.dto.request.UserUpdateRequestDTO
 import com.course.fleet.management.api.entity.TaxiEntity
@@ -22,6 +23,10 @@ import static com.course.fleet.management.api.utils.TestConstants.DATE_START_DAY
 
 class TestUtils {
 
+    static UserCreateRequestDTO buildUserCreateRequestDTO() {
+        return new UserCreateRequestDTO(NAME, EMAIL);
+    }
+
     static UserUpdateRequestDTO buildUserUpdateRequestDTO() {
         return new UserUpdateRequestDTO(NAME, EMAIL);
     }
@@ -36,6 +41,10 @@ class TestUtils {
             .email(EMAIL)
             .id(ID)
             .build()
+    }
+
+    static List<User> buildUserList() {
+        return Arrays.asList(buildUser())
     }
 
     static UserEntity buildUserEntity() {
