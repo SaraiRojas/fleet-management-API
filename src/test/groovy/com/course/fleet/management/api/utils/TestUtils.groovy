@@ -73,6 +73,10 @@ class TestUtils {
                 .build()
     }
 
+    static List<Taxi> buildTaxiList() {
+        return Arrays.asList(buildTaxi())
+    }
+
     static List<TaxiEntity> buildTaxiEntityList() {
         return Arrays.asList(buildTaxiEntity())
     }
