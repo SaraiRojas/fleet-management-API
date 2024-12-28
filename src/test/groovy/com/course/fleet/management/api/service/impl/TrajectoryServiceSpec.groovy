@@ -23,7 +23,7 @@ class TrajectoryServiceSpec extends Specification{
         def trajectories = subject.getTaxiTrajectoryByDate(TestConstants.ID, TestConstants.DATE_STRING, TestConstants.PAGEABLE as Pageable)
 
         then:
-        1 * trajectoryRepository.findByTaxiIdAndDateBetween(TestConstants.ID, TestConstants.DATE_START_DAY, TestConstants.DATE_END_DAY, { it.pageNumber == 0 && it.pageSize == 10 && !it.sort.isSorted() }) >> Optional.of(trajectoryEntityPage)
+        1 * trajectoryRepository.findByTaxiIdAndDateBetween(TestConstants.ID, TestConstants.DATE_START_DAY, TestConstants.DATE_END_DAY, { it.pageNumber == 0 && it.pageSize == 10 && it.sort.isSorted() }) >> Optional.of(trajectoryEntityPage)
         trajectories instanceof Page
         noExceptionThrown()
     }
@@ -36,7 +36,7 @@ class TrajectoryServiceSpec extends Specification{
         def trajectories = subject.getLatestTaxisTrajectories(TestConstants.PAGEABLE as Pageable)
 
         then:
-        1 * trajectoryRepository.findLatestTrajectories({ it.pageNumber == 0 && it.pageSize == 10 && !it.sort.isSorted() }) >> Optional.of(trajectoryEntityPage)
+        1 * trajectoryRepository.findLatestTrajectories({ it.pageNumber == 0 && it.pageSize == 10 && it.sort.isSorted() }) >> Optional.of(trajectoryEntityPage)
         trajectories instanceof Page
         noExceptionThrown()
     }

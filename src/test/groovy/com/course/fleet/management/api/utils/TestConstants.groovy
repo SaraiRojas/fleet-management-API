@@ -1,6 +1,7 @@
 package com.course.fleet.management.api.utils
 
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 
 import java.awt.print.Pageable
 import java.time.LocalDateTime
@@ -24,6 +25,5 @@ interface TestConstants {
 
     static final Double LONGITUDE = 9.9026
 
-    static final Pageable PAGEABLE = PageRequest.of(0, 10) as Pageable
-
+    static final Pageable PAGEABLE = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("someField"))) as Pageable
 }

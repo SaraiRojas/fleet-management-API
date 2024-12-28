@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,9 @@ public class TrajectoryController {
 
   @GetMapping(value = TAXI_TRAJECTORY, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<TrajectoryResponseDTO>> getTaxiTrajectoriesByTaxiIdAndDate(
-      @PathVariable Long taxiId, @RequestParam String date, Pageable pageable) {
+      @PathVariable Long taxiId,
+      @RequestParam String date,
+      @PageableDefault(size = 10) Pageable pageable) {
     DateTimeUtils.ValidateDateFormat(date);
     final Page<Trajectory> trajectoryPage =
         trajectoryService.getTaxiTrajectoryByDate(taxiId, date, pageable);
@@ -42,7 +45,8 @@ public class TrajectoryController {
   }
 
   @GetMapping(value = LATEST_TRAJECTORIES, produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<TrajectoryResponseDTO>> getLatestTaxisTrajectories(Pageable pageable) {
+  public ResponseEntity<Page<TrajectoryResponseDTO>> getLatestTaxisTrajectories(
+      @PageableDefault(size = 10) Pageable pageable) {
 
     final Page<Trajectory> trajectoriesPage =
         trajectoryService.getLatestTaxisTrajectories(pageable);

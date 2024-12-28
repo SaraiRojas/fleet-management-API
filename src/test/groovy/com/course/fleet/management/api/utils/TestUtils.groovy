@@ -1,6 +1,7 @@
 package com.course.fleet.management.api.utils
 
 import com.course.fleet.management.api.domain.Taxi
+import com.course.fleet.management.api.domain.Trajectory
 import com.course.fleet.management.api.domain.User
 import com.course.fleet.management.api.dto.request.UserCreateRequestDTO
 import com.course.fleet.management.api.dto.request.UserUpdateAttributeRequestDTO
@@ -81,6 +82,20 @@ class TestUtils {
         return Arrays.asList(buildTaxiEntity())
     }
 
+    static Trajectory buildTrajectory() {
+        return Trajectory.builder()
+                .id(ID)
+                .date(DATE_START_DAY)
+                .taxiId(ID)
+                .latitude(LATITUDE)
+                .longitude(LONGITUDE)
+                .build()
+    }
+
+    static List<Trajectory> buildTrajectoryList() {
+        return Arrays.asList(buildTrajectory())
+    }
+
     static TrajectoryEntity buildTrajectoryEntity() {
         return TrajectoryEntity.builder()
                 .id(ID)
@@ -97,5 +112,9 @@ class TestUtils {
 
     static Page<TrajectoryEntity> buildTrajectoryEntityPage() {
         return new PageImpl<>(buildTrajectoryEntityList(), TestConstants.PAGEABLE as Pageable, buildTrajectoryEntityList().size())
+    }
+
+    static Page<Trajectory> buildTrajectoryPage() {
+        return new PageImpl<>(buildTrajectoryList(), TestConstants.PAGEABLE as Pageable, buildTrajectoryList().size())
     }
 }

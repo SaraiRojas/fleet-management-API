@@ -22,8 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.course.fleet.management.api.utils.TestConstants.PLATE
 
-
-
 @WebAppConfiguration
 @SpringBootTest(classes = TaxiController)
 class TaxiControllerSpec extends Specification {
